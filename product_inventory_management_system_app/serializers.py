@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import Brand , Color , Product , Store , Inventory
 from django.contrib.auth.models import User
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -47,7 +49,7 @@ class InventorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Inventory
-        fields = ['id','product_name' , 'store_name' , 'quantity' , 'last_stocked_date' , 'is_available']
+        fields = ['id', 'product_name' , 'store_name' , 'quantity' , 'last_stocked_date' , 'is_available']
 
         def create(self, validated_data):
             product_name = validated_data.pop('product_name', None)
@@ -71,12 +73,12 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id' , 'username' , 'first_name' , 'last_name' , 'email' , 'password']
 
-# class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-#     @classmethod
-#     def get_token(cls , user):
-#         token = super().get_token(user)
-#         token['username'] = user.username
-#         return token
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls , user):
+        token = super().get_token(user)
+        token['username'] = user.username
+        return token
 
 
     

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import BrandCreateAPIView , BrandListAPIView , BrandUpdateAPIView , BrandDeleteAPIView , ColorCreateAPIView , ColorListAPIView , ColorUpdateAPIView , ColorDeleteAPIView , ProductCreateAPIView , ProductListAPIView , StoreCreateAPIView , StoreListAPIView , StoreUpdateAPIView , InventoryCreateAPIView , InventoryListAPIView
+from .views import BrandCreateAPIView , BrandListAPIView , BrandUpdateAPIView , BrandDeleteAPIView , ColorCreateAPIView , ColorListAPIView , ColorUpdateAPIView , ColorDeleteAPIView , ProductCreateAPIView , ProductListAPIView , StoreCreateAPIView , StoreListAPIView , StoreUpdateAPIView , InventoryCreateAPIView , InventoryListAPIView , UserCreateAPIView , UserListAPIView , UserUpdateAPIView , UserDeleteAPIView , CustomTokenObtainPairView
 
 urlpatterns = [
     path('createbrand/' , BrandCreateAPIView.as_view() , name='create-brand'),
@@ -16,5 +16,10 @@ urlpatterns = [
     path('liststore/' , StoreListAPIView.as_view() , name='list-store'),
     path('updatestore/<int:pk>/' , StoreUpdateAPIView.as_view() , name='update-store'),
     path('createinventory/' , InventoryCreateAPIView.as_view() , name='create-inventory'),
-    path('listinventory/' , InventoryListAPIView.as_view() , name='list-inventory')
+    path('listinventory/' , InventoryListAPIView.as_view() , name='list-inventory'),
+    path('createuser/' , UserCreateAPIView.as_view() , name='create-user'),
+    path('listuser/' , UserListAPIView.as_view() , name='list-user'),
+    path('updateuser/<int:pk>/' , UserUpdateAPIView.as_view() , name='update-user'),
+    path('deleteuser/<int:pk>/' , UserDeleteAPIView.as_view() , name='delete-user'),
+    path('api/token/' , CustomTokenObtainPairView.as_view() , name='api-token')
 ]

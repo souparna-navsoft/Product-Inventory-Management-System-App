@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from .models import Brand , Color , Product , Store , Inventory
-from .serializers import BrandSerializer , ColorSerializer , ProductSerializer , StoreSerializer , InventorySerializer , UserSerializer 
+from django.contrib.auth.models import User
+from .serializers import BrandSerializer , ColorSerializer , ProductSerializer , StoreSerializer , InventorySerializer , UserSerializer , CustomTokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import generics , status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
@@ -178,28 +180,6 @@ class StoreDeleteAPIView(generics.GenericAPIView):
         store = Store.objects.filter(pk=pk)
         store.delete()
         return Response({'message' : 'Store has been deleted successfully'} , status=status.HTTP_200_OK)
-    
-# class InventoryCreateAPIView(generics.GenericAPIView):
-#     inventory_serializer_class = InventorySerializer  
-
-#     def post(self, request, *args, **kwargs):
-#         inventory_serializer = self.inventory_serializer_class(data=request.data)
-#         print('------------------------', inventory_serializer)
-#         if inventory_serializer.is_valid():           
-#             product_name = request.data.get('product_name')
-#             store_name = request.data.get('store_name')       
-#             print('-----------------------',product_name)   
-#             print('-----------------------',store_name) 
-#             product= Product.objects.get(name=product_name)
-#             store = Store.objects.get(name=store_name)
-#             inventory_serializer.save(product_name=product, store_name=store)
-#             print(inventory_serializer)
-#             return Response({'message' : 'Inventory has been created successfully'} , status=status.HTTP_201_CREATED)
-#         return Response(inventory_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
 
 class InventoryCreateAPIView(generics.GenericAPIView):
     inventory_serializer_class = InventorySerializer  
@@ -226,13 +206,12 @@ class InventoryCreateAPIView(generics.GenericAPIView):
             except Store.MultipleObjectsReturned:
                 store = Store.objects.filter(name=store_name).first()
 
-            # Use the create() method of the serializer to create the Inventory object
             inventory_instance = inventory_serializer.create({
                 'product': product,
                 'store': store,
-                'quantity': request.data.get('quantity'),  # Adjust this based on your actual field names
-                'last_stocked_date': request.data.get('last_stocked_date'),  # Adjust this based on your actual field names
-                'is_available': request.data.get('is_available'),  # Adjust this based on your actual field names
+                'quantity': request.data.get('quantity'), 
+                'last_stocked_date': request.data.get('last_stocked_date'), 
+                'is_available': request.data.get('is_available'),  
             })
 
             print(inventory_serializer)
@@ -249,11 +228,10 @@ class InventoryListAPIView(generics.GenericAPIView):
         inventory = Inventory.objects.all()
         inventory_serializer = self.inventory_serializer_class(inventory, many=True)
         serialized_inventory = inventory_serializer.data
-        print(serialized_inventory)
+
         inventory_list = []
 
         for inventory_data in serialized_inventory:
-            print("-------------", inventory_data)
             product_name = inventory_data['product_name']
             store_name = inventory_data['store_name']
             inventory_list.append({
@@ -270,3 +248,68 @@ class InventoryListAPIView(generics.GenericAPIView):
         }
 
         return Response(context, status=status.HTTP_200_OK)
+    
+class UserCreateAPIView(generics.GenericAPIView):
+     user_serializer_class = UserSerializer
+
+     def post(self , request , *args , **kwargs):
+        user_serializer = self.user_serializer_class(data=request.data)
+        if user_serializer.is_valid():
+            password = user_serializer.validated_data['password']
+            user = user_serializer.save()
+            user.set_password(password)
+            user.save()
+            context = {
+                'id' : user.id,
+                'username' : user.username,
+                'first_name' : user.first_name,
+                'last_name' : user.last_name,
+                'email' : user.email,
+                'password' : user.password
+            }
+            return Response({'message' : 'User has been created successfully'} , status=status.HTTP_201_CREATED)
+        return Response(user_serializer.errors , status=status.HTTP_400_BAD_REQUEST)
+     
+class UserListAPIView(generics.GenericAPIView):
+    user_serializer_class = UserSerializer
+
+    def get(self , request , *args , **kwargs):
+        user = User.objects.all()
+        user_serializer = self.user_serializer_class(user , many=True)
+        context = {
+            'Total Users' : user.count(),
+            'Users' : user_serializer.data
+        }
+        return Response(context , status=status.HTTP_200_OK)
+
+class UserUpdateAPIView(generics.GenericAPIView):
+    queryset = User.objects.all()
+    user_serializer_class = UserSerializer
+
+    def put(self , request , *args , **kwargs):
+        user = self.get_object()
+        user_serializer = self.user_serializer_class(user , data=request.data , partial=True)
+        if user_serializer.is_valid():
+            password = user_serializer.validated_data['password']
+            user = user_serializer.save()
+            user.set_password(password)
+            user.save()
+            context = {
+                'id' : user.id,
+                'username' : user.username,
+                'first_name' : user.first_name,
+                'last_name' : user.last_name,
+                'email' : user.email,
+                'password' : user.password
+            }
+            return Response({'message' : 'User has been updated successfully'} , status=status.HTTP_200_OK)
+        return Response(user.errors , status=status.HTTP_400_BAD_REQUEST)
+    
+class UserDeleteAPIView(generics.GenericAPIView):
+    def delete(self , request , pk , *args , **kwargs):
+        user = User.objects.filter(pk = pk)
+        user.delete()
+        return Response({"message" : "User has been deleted successfully"} , status=status.HTTP_200_OK)
+    
+class CustomTokenObtainPairView(TokenObtainPairView):
+    token_serializer_class = CustomTokenObtainPairSerializer
