@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import BrandCreateAPIView , BrandListAPIView , BrandUpdateAPIView , BrandDeleteAPIView , ColorCreateAPIView , ColorListAPIView , ColorUpdateAPIView , ColorDeleteAPIView , ProductCreateAPIView , ProductListAPIView , StoreCreateAPIView , StoreListAPIView , StoreUpdateAPIView , InventoryCreateAPIView , InventoryListAPIView , UserCreateAPIView , UserListAPIView , UserUpdateAPIView , UserDeleteAPIView , CustomTokenObtainPairView
+from .views import BrandCreateAPIView , BrandListAPIView , BrandUpdateAPIView , BrandDeleteAPIView , ColorCreateAPIView , ColorListAPIView , ColorUpdateAPIView , ColorDeleteAPIView , ProductCreateAPIView , ProductListAPIView , ProductUpdateAPIView , ProductDeleteAPIView , StoreCreateAPIView , StoreListAPIView , StoreUpdateAPIView , InventoryCreateAPIView , InventoryListAPIView , InventoryUpdateAPIView , InventoryDeleteAPIView , UserCreateAPIView , UserListAPIView , UserUpdateAPIView , UserDeleteAPIView , CustomTokenObtainPairView , ExportProductToXLSXAPIView , ExportProductToCSVAPIView
 
 urlpatterns = [
     path('createbrand/' , BrandCreateAPIView.as_view() , name='create-brand'),
@@ -12,14 +12,20 @@ urlpatterns = [
     path('deletecolor/<int:pk>/' , ColorDeleteAPIView.as_view() , name='delete-color'),
     path('createproduct/' , ProductCreateAPIView.as_view() , name='create-product'),
     path('listproduct/' , ProductListAPIView.as_view() , name='list-product'),
+    path('updateproduct/<uuid:pk>/' , ProductUpdateAPIView.as_view() , name='update-product'),
+    path('deleteproduct/<uuid:pk>/' , ProductDeleteAPIView.as_view() , name='delete-product'),
     path('createstore/' , StoreCreateAPIView.as_view() , name='create-store'),
     path('liststore/' , StoreListAPIView.as_view() , name='list-store'),
     path('updatestore/<int:pk>/' , StoreUpdateAPIView.as_view() , name='update-store'),
     path('createinventory/' , InventoryCreateAPIView.as_view() , name='create-inventory'),
     path('listinventory/' , InventoryListAPIView.as_view() , name='list-inventory'),
+    path('updateinventory/<int:pk>/' , InventoryUpdateAPIView.as_view() , name='update-inventory'),
+    path('deleteinventory/<int:pk>/' , InventoryDeleteAPIView.as_view() , name='delete-inventory'),
     path('createuser/' , UserCreateAPIView.as_view() , name='create-user'),
     path('listuser/' , UserListAPIView.as_view() , name='list-user'),
     path('updateuser/<int:pk>/' , UserUpdateAPIView.as_view() , name='update-user'),
     path('deleteuser/<int:pk>/' , UserDeleteAPIView.as_view() , name='delete-user'),
-    path('api/token/' , CustomTokenObtainPairView.as_view() , name='api-token')
+    path('api/token/' , CustomTokenObtainPairView.as_view() , name='api-token'),
+    path('api/product/export/xlsx/', ExportProductToXLSXAPIView.as_view(), name='export-product-xlsx'),
+    path('api/product/export/csv/', ExportProductToCSVAPIView.as_view(), name='export-product-csv'),
 ]
