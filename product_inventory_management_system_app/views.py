@@ -332,9 +332,6 @@ class InventoryCreateAPIView(generics.GenericAPIView):
         if inventory_serializer.is_valid():           
             product_name = request.data.get('product_name')
             store_name = request.data.get('store_name')       
-            print('-----------------------', product_name)   
-            print('-----------------------', store_name) 
-
             try:
                 product = Product.objects.get(name=product_name)
             except Product.DoesNotExist:
@@ -357,8 +354,7 @@ class InventoryCreateAPIView(generics.GenericAPIView):
                 'is_available': request.data.get('is_available'),  
             })
 
-            print(inventory_serializer)
-            return Response({'message': 'Inventory has been created successfully'}, status=status.HTTP_201_CREATED)
+            return Response({'message': 'Inventory has been created successfully'} , status=status.HTTP_201_CREATED)
         return Response(inventory_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
@@ -388,6 +384,7 @@ class InventoryListAPIView(generics.GenericAPIView):
                 'id': inventory_data['id'],
                 'product_name': product_name,
                 'store_name': store_name,
+                'quantity': inventory_data['quantity'],
                 'last_stocked_date': inventory_data['last_stocked_date'],
                 'is_available': inventory_data['is_available'],
             })
@@ -446,6 +443,9 @@ class UserCreateAPIView(generics.GenericAPIView):
      def post(self , request , *args , **kwargs):
         user_serializer = self.user_serializer_class(data=request.data)
         if user_serializer.is_valid():
+            email = user_serializer.validated_data['email']
+            if User.objects.filter(email=email).exists():
+                return Response({'message': 'Email already exists'})
             password = user_serializer.validated_data['password']
             user = user_serializer.save()
             user.set_password(password)
@@ -487,10 +487,10 @@ class UserUpdateAPIView(generics.GenericAPIView):
         user = self.get_object()
         user_serializer = self.user_serializer_class(user , data=request.data , partial=True)
         if user_serializer.is_valid():
-            password = user_serializer.validated_data['password']
+            password = user_serializer.validated_data.get('password')
+            if password:
+                user.set_password(password)
             user = user_serializer.save()
-            user.set_password(password)
-            user.save()
             return Response({'message' : 'User has been updated successfully'} , status=status.HTTP_200_OK)
         return Response(user.errors , status=status.HTTP_400_BAD_REQUEST)
     

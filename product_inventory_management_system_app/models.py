@@ -5,7 +5,7 @@ import uuid
 class Brand(models.Model):
     name = models.CharField(max_length=255 , unique=True , blank=False)
     country = models.CharField(max_length=100 , blank=False)
-    founded_year = models.PositiveIntegerField(blank=False)
+    founded_year = models.PositiveIntegerField(default=0 , blank=False)
     description = models.TextField(default="default brand" , blank=True , null=True)
 
 class Color(models.Model):
