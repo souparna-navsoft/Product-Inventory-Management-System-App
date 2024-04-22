@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import BrandCreateAPIView , BrandListAPIView , BrandUpdateAPIView , BrandDeleteAPIView , ColorCreateAPIView , ColorListAPIView , ColorUpdateAPIView , ColorDeleteAPIView , ProductCreateAPIView , ProductListAPIView , ProductUpdateAPIView , ProductDeleteAPIView , StoreCreateAPIView , StoreListAPIView , StoreUpdateAPIView , InventoryCreateAPIView , InventoryListAPIView , InventoryUpdateAPIView , InventoryDeleteAPIView , UserCreateAPIView , UserListAPIView , UserUpdateAPIView , UserDeleteAPIView , CustomTokenObtainPairView , ExportProductToXLSXAPIView , ExportProductToCSVAPIView
+from .views import BrandCreateAPIView , BrandListAPIView , BrandUpdateAPIView , BrandDeleteAPIView , ColorCreateAPIView , ColorListAPIView , ColorUpdateAPIView , ColorDeleteAPIView , ProductCreateAPIView , ProductListAPIView , ProductUpdateAPIView , ProductDeleteAPIView , StoreCreateAPIView , StoreListAPIView , StoreUpdateAPIView , StoreDeleteAPIView , InventoryCreateAPIView , InventoryListAPIView , InventoryUpdateAPIView , InventoryDeleteAPIView , UserCreateAPIView , UserListAPIView , UserUpdateAPIView , UserDeleteAPIView , CustomTokenObtainPairView , ExportProductToXLSXAPIView , ExportProductToCSVAPIView
 
 urlpatterns = [
     path('createbrand/' , BrandCreateAPIView.as_view() , name='create-brand'),
@@ -17,6 +17,7 @@ urlpatterns = [
     path('createstore/' , StoreCreateAPIView.as_view() , name='create-store'),
     path('liststore/' , StoreListAPIView.as_view() , name='list-store'),
     path('updatestore/<int:pk>/' , StoreUpdateAPIView.as_view() , name='update-store'),
+    path('deletestore/<int:pk>/' , StoreDeleteAPIView.as_view() , name='delete-store'),
     path('createinventory/' , InventoryCreateAPIView.as_view() , name='create-inventory'),
     path('listinventory/' , InventoryListAPIView.as_view() , name='list-inventory'),
     path('updateinventory/<int:pk>/' , InventoryUpdateAPIView.as_view() , name='update-inventory'),

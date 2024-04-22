@@ -23,9 +23,9 @@ class Product(models.Model):
     reviews = models.TextField(default="default reviews" , blank=True , null=True)
 
 class Store(models.Model):
-    name = models.CharField(max_length=255 , blank=False)
+    name = models.CharField(max_length=255 , unique=True , blank=False)
     address = models.CharField(max_length=255 , blank=False)
-    phone_number = models.CharField(max_length=50 , blank=False)
+    phone_number = models.CharField(max_length=50 , unique=True , blank=False)
     email = models.EmailField(max_length=100 , unique=True , blank=False)
     rating = models.DecimalField(max_digits=50 , decimal_places=2 , blank=False)
 
